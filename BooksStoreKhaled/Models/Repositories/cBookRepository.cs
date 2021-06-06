@@ -13,8 +13,8 @@ namespace BooksStoreKhaled.Models.Repositories
             books = new List<Book>()
             {
                 new Book{BookId=1,Title="c#" , Description="c# desc" },
-                new Book{BookId=1,Title="java" , Description="java desc" },
-                new Book{BookId=1,Title="pascal" , Description="pascal desc" }
+                new Book{BookId=2,Title="java" , Description="java desc" },
+                new Book{BookId=3,Title="pascal" , Description="pascal desc" }
             };
         }
         public void add(Book newBook)
