@@ -41,10 +41,11 @@ namespace BooksStoreKhaled.Controllers
         // POST: AuthorController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Author author)
         {
             try
             {
+                authorRepository.add(author);
                 return RedirectToAction(nameof(Index));
             }
             catch
