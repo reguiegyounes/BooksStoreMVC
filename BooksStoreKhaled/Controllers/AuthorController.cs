@@ -57,16 +57,18 @@ namespace BooksStoreKhaled.Controllers
         // GET: AuthorController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var author = authorRepository.Find(id);
+            return View(author);
         }
 
         // POST: AuthorController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Author author)
         {
             try
             {
+                authorRepository.update(id,author);
                 return RedirectToAction(nameof(Index));
             }
             catch

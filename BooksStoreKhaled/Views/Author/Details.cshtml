@@ -25,6 +25,6 @@
     </dl>
 </div>
 <div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.AuthorId }) |
+    <a asp-action="edit" asp-route-id="@Model.AuthorId" class="btn btn-primary">Edit</a> 
     <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
 </div>
