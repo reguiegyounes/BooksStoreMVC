@@ -1,5 +1,6 @@
 ﻿using BooksStoreKhaled.Models;
 using BooksStoreKhaled.Models.Repositories;
+using BooksStoreKhaled.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -9,13 +10,15 @@ using System.Threading.Tasks;
 
 namespace BooksStoreKhaled.Controllers
 {
-    public class BookController : Controller
+    public class BooksController : Controller
     {
         private readonly IBooksStoreRepository<Book> bookRepository;
+        private readonly IBooksStoreRepository<Author> authorRepository;
 
-        public BookController(IBooksStoreRepository<Book> bookRepository)
+        public BooksController(IBooksStoreRepository<Book> bookRepository , IBooksStoreRepository<Author> authorRepository)
         {
             this.bookRepository = bookRepository;
+            this.authorRepository = authorRepository;
         }
         // GET: BookController
         public ActionResult Index()
@@ -34,16 +37,29 @@ namespace BooksStoreKhaled.Controllers
         // GET: BookController/Create
         public ActionResult Create()
         {
-            return View();
+            var model = new cBookAuthorsViewModel
+            {
+                Authors = authorRepository.List().ToList()
+            };
+            return View(model);
         }
 
         // POST: BookController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(cBookAuthorsViewModel model)
         {
             try
             {
+                var author = authorRepository.Find(model.AuthorId);
+                Book book = new Book
+                {
+                    BookId=model.BookId,
+                    Title=model.Title,
+                    Description=model.Description,
+                    Author=author
+                };
+                bookRepository.add(book);
                 return RedirectToAction(nameof(Index));
             }
             catch
