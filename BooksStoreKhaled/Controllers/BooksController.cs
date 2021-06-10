@@ -71,16 +71,36 @@ namespace BooksStoreKhaled.Controllers
         // GET: BookController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            
+            var book = bookRepository.Find(id);
+            var AuthorID = book.Author==null?1:book.Author.AuthorId;
+            var model = new cBookAuthorsViewModel
+            {
+                BookId = book.BookId,
+                Title = book.Title,
+                Description=book.Description,
+                AuthorId= AuthorID,
+                Authors = authorRepository.List().ToList()
+            };
+            return View(model);
         }
 
         // POST: BookController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, cBookAuthorsViewModel model)
         {
             try
             {
+                var author = authorRepository.Find(model.AuthorId);
+                Book book = new Book
+                {
+                    BookId = model.BookId,
+                    Title = model.Title,
+                    Description = model.Description,
+                    Author = author
+                };
+                bookRepository.update(id,book);
                 return RedirectToAction(nameof(Index));
             }
             catch
