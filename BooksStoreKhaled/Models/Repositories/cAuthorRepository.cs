@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BooksStoreKhaled.Models.Repositories
 {
@@ -19,6 +17,7 @@ namespace BooksStoreKhaled.Models.Repositories
         }
         public void add(Author newAuthor)
         {
+            newAuthor.AuthorId = authors.Max(a => a.AuthorId) + 1;
             authors.Add(newAuthor);
         }
 
@@ -41,7 +40,7 @@ namespace BooksStoreKhaled.Models.Repositories
 
         public Author Find(int id)
         {
-            var author = authors.SingleOrDefault(a => a.AuthorId==id);
+            var author = authors.SingleOrDefault(a => a.AuthorId == id);
             return author;
         }
     }

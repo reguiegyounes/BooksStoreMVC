@@ -19,6 +19,7 @@ namespace BooksStoreKhaled.Models.Repositories
         }
         public void add(Book newBook)
         {
+            newBook.BookId = books.Max(b => b.BookId)+1;
             books.Add(newBook);
         }
 
