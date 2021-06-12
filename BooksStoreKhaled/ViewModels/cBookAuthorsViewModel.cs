@@ -1,15 +1,20 @@
 ﻿using BooksStoreKhaled.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace BooksStoreKhaled.ViewModels
 {
     public class cBookAuthorsViewModel
     {
         public int BookId { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        [MinLength(3)]
         public string Title { get; set; }
+
+        [Required]
+        [StringLength(200, MinimumLength = 3)]
         public string Description { get; set; }
         public int AuthorId { get; set; }
         public List<Author> Authors { get; set; }

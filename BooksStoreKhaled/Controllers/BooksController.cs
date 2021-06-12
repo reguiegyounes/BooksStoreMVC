@@ -45,23 +45,34 @@ namespace BooksStoreKhaled.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(cBookAuthorsViewModel model)
         {
-            try
+            var vModel = new cBookAuthorsViewModel
             {
-                var author = authorRepository.Find(model.AuthorId);
-                Book book = new Book
+                Authors = authorRepository.List().ToList()
+            };
+            if (ModelState.IsValid)
+            {
+                try
                 {
-                    BookId = model.BookId,
-                    Title = model.Title,
-                    Description = model.Description,
-                    Author = author
-                };
-                bookRepository.add(book);
-                return RedirectToAction(nameof(Index));
+                    var author = authorRepository.Find(model.AuthorId);
+                    Book book = new Book
+                    {
+                        BookId = model.BookId,
+                        Title = model.Title,
+                        Description = model.Description,
+                        Author = author
+                    };
+                    bookRepository.add(book);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch
+                {
+                    return View();
+                }
             }
-            catch
-            {
-                return View();
-            }
+            ModelState.AddModelError("","You have to fill all required fields");
+            return View(vModel);
+            
+           
         }
 
         // GET: BookController/Edit/5
