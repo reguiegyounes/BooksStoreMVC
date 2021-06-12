@@ -1,12 +1,8 @@
 ﻿using BooksStoreKhaled.Models;
 using BooksStoreKhaled.Models.Repositories;
 using BooksStoreKhaled.ViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BooksStoreKhaled.Controllers
 {
@@ -15,7 +11,7 @@ namespace BooksStoreKhaled.Controllers
         private readonly IBooksStoreRepository<Book> bookRepository;
         private readonly IBooksStoreRepository<Author> authorRepository;
 
-        public BooksController(IBooksStoreRepository<Book> bookRepository , IBooksStoreRepository<Author> authorRepository)
+        public BooksController(IBooksStoreRepository<Book> bookRepository, IBooksStoreRepository<Author> authorRepository)
         {
             this.bookRepository = bookRepository;
             this.authorRepository = authorRepository;
@@ -30,7 +26,7 @@ namespace BooksStoreKhaled.Controllers
         // GET: BookController/Details/5
         public ActionResult Details(int id)
         {
-            var book=bookRepository.Find(id);
+            var book = bookRepository.Find(id);
             return View(book);
         }
 
@@ -54,10 +50,10 @@ namespace BooksStoreKhaled.Controllers
                 var author = authorRepository.Find(model.AuthorId);
                 Book book = new Book
                 {
-                    BookId=model.BookId,
-                    Title=model.Title,
-                    Description=model.Description,
-                    Author=author
+                    BookId = model.BookId,
+                    Title = model.Title,
+                    Description = model.Description,
+                    Author = author
                 };
                 bookRepository.add(book);
                 return RedirectToAction(nameof(Index));
@@ -71,15 +67,15 @@ namespace BooksStoreKhaled.Controllers
         // GET: BookController/Edit/5
         public ActionResult Edit(int id)
         {
-            
+
             var book = bookRepository.Find(id);
-            var AuthorID = book.Author==null?1:book.Author.AuthorId;
+            var AuthorID = book.Author == null ? 1 : book.Author.AuthorId;
             var model = new cBookAuthorsViewModel
             {
                 BookId = book.BookId,
                 Title = book.Title,
-                Description=book.Description,
-                AuthorId= AuthorID,
+                Description = book.Description,
+                AuthorId = AuthorID,
                 Authors = authorRepository.List().ToList()
             };
             return View(model);
@@ -100,7 +96,7 @@ namespace BooksStoreKhaled.Controllers
                     Description = model.Description,
                     Author = author
                 };
-                bookRepository.update(id,book);
+                bookRepository.update(id, book);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -112,16 +108,18 @@ namespace BooksStoreKhaled.Controllers
         // GET: BookController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var book = bookRepository.Find(id);
+            return View(book);
         }
 
         // POST: BookController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult PostDelete(int id)
         {
             try
             {
+                bookRepository.delete(id);
                 return RedirectToAction(nameof(Index));
             }
             catch
