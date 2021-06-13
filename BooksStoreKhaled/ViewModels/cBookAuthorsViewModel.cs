@@ -1,4 +1,5 @@
 ﻿using BooksStoreKhaled.Models;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -18,5 +19,6 @@ namespace BooksStoreKhaled.ViewModels
         public string Description { get; set; }
         public int AuthorId { get; set; }
         public List<Author> Authors { get; set; }
+        public IFormFile Image { get; set; }
     }
 }

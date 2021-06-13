@@ -1,7 +1,9 @@
 ﻿using BooksStoreKhaled.Models;
 using BooksStoreKhaled.Models.Repositories;
 using BooksStoreKhaled.ViewModels;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 using System.Linq;
 
 namespace BooksStoreKhaled.Controllers
@@ -10,11 +12,13 @@ namespace BooksStoreKhaled.Controllers
     {
         private readonly IBooksStoreRepository<Book> bookRepository;
         private readonly IBooksStoreRepository<Author> authorRepository;
+        private readonly IHostingEnvironment hosting;
 
-        public BooksController(IBooksStoreRepository<Book> bookRepository, IBooksStoreRepository<Author> authorRepository)
+        public BooksController(IBooksStoreRepository<Book> bookRepository, IBooksStoreRepository<Author> authorRepository, IHostingEnvironment hosting)
         {
             this.bookRepository = bookRepository;
             this.authorRepository = authorRepository;
+            this.hosting = hosting;
         }
         // GET: BookController
         public ActionResult Index()
@@ -42,6 +46,7 @@ namespace BooksStoreKhaled.Controllers
 
         // POST: BookController/Create
         [HttpPost]
+        [RequestFormLimits(MultipartBodyLengthLimit = 1024*1024*1024)] //byte
         [ValidateAntiForgeryToken]
         public ActionResult Create(cBookAuthorsViewModel model)
         {
@@ -53,12 +58,25 @@ namespace BooksStoreKhaled.Controllers
             {
                 try
                 {
+                    FileInfo info = new FileInfo(model.Image.FileName);
+                    string fileName = model.Title + info.Extension;
+                    if (model.Image!=null)
+                    {
+                        string uploads = Path.Combine(hosting.WebRootPath,"uploads");
+                        string fullPath = Path.Combine(uploads,fileName);
+                        using (FileStream fileStream= System.IO.File.Create(fullPath))
+                        {
+                            model.Image.CopyTo(fileStream);
+                            fileStream.Flush();
+                        }
+                    }
                     var author = authorRepository.Find(model.AuthorId);
                     Book book = new Book
                     {
                         BookId = model.BookId,
                         Title = model.Title,
                         Description = model.Description,
+                        ImageUrl=fileName,
                         Author = author
                     };
                     bookRepository.add(book);

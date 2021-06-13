@@ -24,30 +24,36 @@
             <th>
                 @Html.DisplayNameFor(model => model.Author.FullName)
             </th>
+            <th>
+               Image
+            </th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BookId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Author.FullName)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.BookId }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.BookId }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.BookId })
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.BookId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Author.FullName)
+            </td>
+            <td>
+                <img src="~/uploads/@item.ImageUrl" alt="@item.Title" class="img-thumbnail" style="height:50px"/>
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.BookId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.BookId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.BookId })
+            </td>
+        </tr>
         }
     </tbody>
 </table>
