@@ -105,33 +105,74 @@ namespace BooksStoreKhaled.Controllers
                 Title = book.Title,
                 Description = book.Description,
                 AuthorId = AuthorID,
-                Authors = authorRepository.List().ToList()
+                Authors = authorRepository.List().ToList(),
+                ImageUrl = book.ImageUrl
             };
             return View(model);
         }
 
         // POST: BookController/Edit/5
         [HttpPost]
+        [RequestFormLimits(MultipartBodyLengthLimit = 1024 * 1024 * 1024)] //byte
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, cBookAuthorsViewModel model)
         {
-            try
+            var vModel = new cBookAuthorsViewModel
             {
-                var author = authorRepository.Find(model.AuthorId);
-                Book book = new Book
+                Authors = authorRepository.List().ToList()
+            };
+            if (ModelState.IsValid)
+            {
+                try
                 {
-                    BookId = model.BookId,
-                    Title = model.Title,
-                    Description = model.Description,
-                    Author = author
-                };
-                bookRepository.update(id, book);
-                return RedirectToAction(nameof(Index));
+                    string fileName= bookRepository.Find(id).ImageUrl;
+                    string uploads = Path.Combine(hosting.WebRootPath, "uploads");
+                    string oldPath = Path.Combine(uploads, fileName);
+                    string fullPath ;
+                    if (model.Image != null)
+                    {
+                        FileInfo info = new FileInfo(model.Image.FileName);
+                        fileName = model.Title + info.Extension;
+                        fullPath = Path.Combine(uploads, fileName);
+                        if (System.IO.File.Exists(oldPath))
+                        {
+                            System.IO.File.Delete(oldPath);
+                        }
+                        using (FileStream fileStream = System.IO.File.Create(fullPath))
+                        {
+                            model.Image.CopyTo(fileStream);
+                            fileStream.Flush();
+                        }
+                    }
+                    else
+                    {
+                        if (System.IO.File.Exists(oldPath))
+                        {
+                            FileInfo info = new FileInfo(oldPath);
+                            fileName = model.Title + info.Extension;
+                            fullPath = Path.Combine(uploads, fileName);
+                            System.IO.File.Move(oldPath, fullPath);
+                        }
+                    }
+                    var author = authorRepository.Find(model.AuthorId);
+                    Book book = new Book
+                    {
+                        BookId = model.BookId,
+                        Title = model.Title,
+                        Description = model.Description,
+                        Author = author,
+                        ImageUrl = fileName
+                    };
+                    bookRepository.update(id, book);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch
+                {
+                    return View();
+                }
             }
-            catch
-            {
-                return View();
-            }
+            ModelState.AddModelError("", "You have to fill all required fields");
+            return View(vModel);
         }
 
         // GET: BookController/Delete/5

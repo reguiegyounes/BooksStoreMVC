@@ -12,9 +12,9 @@ namespace BooksStoreKhaled.Models.Repositories
         {
             books = new List<Book>()
             {
-                new Book{BookId=1,Title="c#" , Description="c# desc" },
-                new Book{BookId=2,Title="java" , Description="java desc" },
-                new Book{BookId=3,Title="pascal" , Description="pascal desc" }
+                new Book{BookId=1,Title="c#" , Description="c# desc" ,ImageUrl="01.png" },
+                new Book{BookId=2,Title="java" , Description="java desc",ImageUrl="02.png" },
+                new Book{BookId=3,Title="pascal" , Description="pascal desc",ImageUrl="03.png" }
             };
         }
         public void add(Book newBook)
@@ -40,6 +40,7 @@ namespace BooksStoreKhaled.Models.Repositories
             book.Title = newBook.Title;
             book.Description = newBook.Description;
             book.Author = newBook.Author;
+            book.ImageUrl = newBook.ImageUrl;
         }
 
         public Book Find(int id)
